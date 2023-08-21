@@ -125,3 +125,4 @@ terraform.rc
 .terraform/plugins
 
 .pytest_cache
+.venv
