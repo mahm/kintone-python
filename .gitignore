@@ -124,4 +124,4 @@ terraform.rc
 # binaries for each provider
 .terraform/plugins
 
-vectordb/chromadb_data
+.pytest_cache
