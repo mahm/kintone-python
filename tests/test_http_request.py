@@ -2,7 +2,7 @@ from io import BytesIO
 
 import pytest
 from contextlib import contextmanager
-from unittest.mock import patch, mock_open
+from unittest.mock import patch
 from kintone.http_request import HttpRequest
 
 # 認証情報と期待されるヘッダー
