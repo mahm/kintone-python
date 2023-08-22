@@ -16,7 +16,7 @@ class HttpRequest:
             self.token = None
         self.http = urllib3.PoolManager()
 
-    def _build_headers(self) -> dict:
+    def _build_headers(self, content_type: str = None) -> dict:
         headers = {}
         if self.token:
             headers['X-Cybozu-API-Token'] = f'{self.token}'
@@ -25,7 +25,8 @@ class HttpRequest:
             headers['X-Cybozu-Authorization'] = base64.b64encode(credentials.encode()).decode()
         else:
             raise ValueError("Either user and password or token must be provided.")
-        headers['Content-Type'] = 'application/json'
+        if content_type:
+            headers['Content-Type'] = content_type
         return headers
 
     def get(self, path: str, params: dict = None):
@@ -35,7 +36,7 @@ class HttpRequest:
         return result
 
     def post(self, path: str, body: dict = None):
-        headers = self._build_headers()
+        headers = self._build_headers(content_type='application/json')
         body = bytes(json.dumps(body), encoding="utf-8")
         response = self.http.request('POST', self.url_prefix + path, headers=headers, body=body)
         result = json.loads(response.data.decode('utf-8'))

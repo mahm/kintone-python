@@ -4,6 +4,7 @@ from .http_request import HttpRequest
 from .commands.space import Space
 from .commands.app import App
 from .commands.record import Record
+from .commands.records import Records
 
 
 class Client:
@@ -14,3 +15,4 @@ class Client:
         self.space = Space(self.http_request)
         self.app = App(self.http_request)
         self.record = Record(self.http_request)
+        self.records = Records(self.http_request)
