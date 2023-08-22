@@ -3,6 +3,7 @@ from typing import Union, List
 from .http_request import HttpRequest
 from .commands.space import Space
 from .commands.app import App
+from .commands.record import Record
 
 
 class Client:
@@ -12,3 +13,4 @@ class Client:
         self.http_request = HttpRequest(domain, user, password, token)
         self.space = Space(self.http_request)
         self.app = App(self.http_request)
+        self.record = Record(self.http_request)
