@@ -1,4 +1,8 @@
 class Query:
+    SPECIAL_FUNCTIONS = {
+        "NOW()", "LAST_MONTH()", "TODAY()", "THIS_MONTH()", "THIS_YEAR()", "LOGINUSER()", "PRIMARY_ORGANIZATION()"
+    }
+
     @staticmethod
     def now():
         return "NOW()"
@@ -22,6 +26,10 @@ class Query:
     @staticmethod
     def login_user():
         return "LOGINUSER()"
+
+    @staticmethod
+    def primary_organization():
+        return "PRIMARY_ORGANIZATION()"
 
     def __init__(self):
         self.query = []
@@ -95,17 +103,22 @@ class Query:
         def not_like(self, other):
             return self._save('not like', other)
 
-        def in_(self, other):
-            if isinstance(other, (list, tuple)):
-                other = ", ".join(f'"{item}"' for item in other)  # ここでダブルクォーテーションを追加
-                other = f"({other})"
-            return self._save('in', other)
+        def in_(self, other: list or tuple):
+            return self._save('in', self._multiple_selections(other))
 
-        def not_in(self, other):
-            if isinstance(other, (list, tuple)):
-                other = ", ".join(f'"{item}"' for item in other)  # ここでダブルクォーテーションを追加
-                other = f"({other})"
-            return self._save('not in', other)
+        def not_in(self, other: list or tuple):
+            return self._save('not in', self._multiple_selections(other))
+
+        @staticmethod
+        def _multiple_selections(other: list or tuple):
+            formatted_items = []
+            for item in other:
+                if (item in Query.SPECIAL_FUNCTIONS) or isinstance(item, (int, float)):
+                    formatted_items.append(str(item))
+                else:
+                    formatted_items.append(f'"{item}"')
+            other = ", ".join(formatted_items)
+            return f"({other})"
 
         def _save(self, condition, other):
             if isinstance(other, (int, float)):
