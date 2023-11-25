@@ -29,9 +29,25 @@ class HttpRequest:
             headers['Content-Type'] = content_type
         return headers
 
+    def _build_query_params(self, params: dict) -> str:
+        if not params:
+            return ""
+        query_params = []
+        for key, value in params.items():
+            if isinstance(value, list):
+                for i, v in enumerate(value):
+                    query_params.append(f"{key}[{i}]={v}")
+            else:
+                query_params.append(f"{key}={value}")
+        return "&".join(query_params)
+
     def get(self, path: str, params: dict = None):
         headers = self._build_headers()
-        response = self.http.request('GET', self.url_prefix + path, headers=headers, fields=params)
+        query_params = self._build_query_params(params)
+        url = self.url_prefix + path
+        if query_params:
+            url += "?" + query_params
+        response = self.http.request('GET', url, headers=headers)
         result = json.loads(response.data.decode('utf-8'))
         return result
 
